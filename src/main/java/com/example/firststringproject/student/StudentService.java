@@ -56,4 +56,9 @@ public class StudentService {
             student.setEmail(email);
         }
     }
+
+    public Student getStudentByID(Long studentID) {
+        return studentRepository.findById(studentID)
+                .orElseThrow(() -> new IllegalStateException("Student with id " + studentID + " doesn't exists !"));
+    }
 }
