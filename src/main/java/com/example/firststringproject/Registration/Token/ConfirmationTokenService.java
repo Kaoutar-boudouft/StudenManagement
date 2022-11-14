@@ -14,4 +14,8 @@ public class ConfirmationTokenService {
 
         confirmationTokenRepository.save(confirmationToken);
     }
+
+    public ConfirmationToken getToken(String token) {
+        return confirmationTokenRepository.findByToken(token).orElseThrow(()-> new IllegalStateException("Token not found"));
+    }
 }

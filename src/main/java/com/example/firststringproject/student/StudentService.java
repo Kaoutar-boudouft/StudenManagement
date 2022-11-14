@@ -85,6 +85,10 @@ public class StudentService implements UserDetailsService {
 
 
         //send email
-        return "it works";
+        return token;
+    }
+
+    public int enableStudent(String email) {
+        return studentRepository.enableStudent(email);
     }
 }
