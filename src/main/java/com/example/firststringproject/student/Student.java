@@ -1,12 +1,26 @@
 package com.example.firststringproject.student;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collection;
+import java.util.Collections;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
 @Entity
 @Table
-public class Student {
+public class Student implements UserDetails {
 
     @Id
     @SequenceGenerator(
@@ -22,25 +36,47 @@ public class Student {
     private Long id;
     private String name;
     private String email;
+
+    private String password;
     private LocalDate dob;
 
     @Transient
     private Integer age;
 
-    public Student() {
-    }
+    @Enumerated(EnumType.STRING)
+    private AppStudentRole appStudentRole;
 
-    public Student(String name, String email, LocalDate dob) {
+    private Boolean locked=false;
+
+    private Boolean enabled=false;
+
+
+    public Student(String name, String email, LocalDate dob, String password, AppStudentRole appStudentRole, Boolean locked, Boolean enabled) {
         this.name = name;
         this.email = email;
         this.dob = dob;
+        this.password = password;
+        this.appStudentRole = appStudentRole;
+        this.locked = locked;
+        this.enabled = enabled;
     }
 
-    public Student(Long id, String name, String email, LocalDate dob) {
+    public Student(Long id, String name, String email, LocalDate dob, String password, AppStudentRole appStudentRole, Boolean locked, Boolean enabled) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.dob = dob;
+        this.password = password;
+        this.appStudentRole = appStudentRole;
+        this.locked = locked;
+        this.enabled = enabled;
+    }
+
+    public Student(String name, String email, String password, AppStudentRole appStudentRole) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.appStudentRole = appStudentRole;
     }
 
     public Long getId() {
@@ -49,10 +85,6 @@ public class Student {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
@@ -68,7 +100,7 @@ public class Student {
     }
 
     public Integer getAge() {
-        return Period.between(this.dob,LocalDate.now()).getYears();
+        return Period.between(this.dob, LocalDate.now()).getYears();
     }
 
     public void setAge(Integer age) {
@@ -84,6 +116,38 @@ public class Student {
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+
+
+    @Override
     public String toString() {
         return "Student{" +
                 "id=" + id +
@@ -93,4 +157,11 @@ public class Student {
                 ", dob=" + dob +
                 '}';
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appStudentRole.name());
+        return Collections.singletonList(authority);
+    }
+
 }

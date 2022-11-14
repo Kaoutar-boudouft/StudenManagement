@@ -1,23 +1,27 @@
 package com.example.firststringproject.student;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.firststringproject.Registration.Token.ConfirmationToken;
+import com.example.firststringproject.Registration.Token.ConfirmationTokenService;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.time.Month;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class StudentService {
+@AllArgsConstructor
+public class StudentService implements UserDetailsService {
 
     private final StudentRepository studentRepository;
-
-    @Autowired
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ConfirmationTokenService confirmationTokenService;
 
     public List<Student> getStudents(){
         return studentRepository.findAll();
@@ -60,5 +64,27 @@ public class StudentService {
     public Student getStudentByID(Long studentID) {
         return studentRepository.findById(studentID)
                 .orElseThrow(() -> new IllegalStateException("Student with id " + studentID + " doesn't exists !"));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return studentRepository.findStudentByEmail(email).orElseThrow(()-> new UsernameNotFoundException("User with email "+email+" not found!"));
+    }
+
+    public String signUpStudent(Student student){
+        Optional<Student> studentByEmail=studentRepository.findStudentByEmail(student.getEmail());
+        if (studentByEmail.isPresent()){
+            throw new IllegalStateException("Email already taken !");
+        }
+        String encodedPassword=bCryptPasswordEncoder.encode(student.getPassword());
+        student.setPassword(encodedPassword);
+        studentRepository.save(student);
+
+        String token=UUID.randomUUID().toString();
+        confirmationTokenService.saveConfirmationToken(new ConfirmationToken(token, LocalDateTime.now(),LocalDateTime.now().plusMinutes(15),student));
+
+
+        //send email
+        return "it works";
     }
 }
