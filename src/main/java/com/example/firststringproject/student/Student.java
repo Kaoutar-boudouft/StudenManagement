@@ -72,11 +72,12 @@ public class Student implements UserDetails {
         this.enabled = enabled;
     }
 
-    public Student(String name, String email, String password, AppStudentRole appStudentRole) {
+    public Student(String name, String email, String password, AppStudentRole appStudentRole,LocalDate dob) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.appStudentRole = appStudentRole;
+        this.dob=dob;
     }
 
     public Long getId() {

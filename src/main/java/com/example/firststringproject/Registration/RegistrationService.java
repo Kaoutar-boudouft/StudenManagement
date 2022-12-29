@@ -26,16 +26,23 @@ public class RegistrationService {
 
     private final EmailService emailService;
     public String register(RegistrationRequest request) {
-        Boolean isValidEmail=emailValidator.test(request.getEmail());
-        if(!isValidEmail){
-            throw new IllegalStateException("email not valid");
+        if (!request.validateRequest().equals("")){
+            return request.validateRequest();
         }
-        String token= studentService.signUpStudent(new Student(request.getName(),request.getEmail(),request.getPassword(), AppStudentRole.Normal));
+        else {
+            boolean isValidEmail=emailValidator.test(request.getEmail());
+            if(!isValidEmail){
+                throw new IllegalStateException("email not valid");
+            }
 
-        String link="http://localhost:8080/api/v1/registration/confirm?token="+token;
-        emailService.send(request.getEmail(),"<a href='"+link+"'>click to confirm</a>");
+            String token= studentService.signUpStudent(new Student(request.getName(),request.getEmail(),request.getPassword(), AppStudentRole.Normal,request.getDob()));
 
-        return token;
+            String link="http://localhost:8080/api/v1/registration/confirm?token="+token;
+            emailService.send(request.getEmail(),"<a href='"+link+"'>click to confirm</a>");
+
+            return token;
+        }
+
     }
 
     @Transactional
