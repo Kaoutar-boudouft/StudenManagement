@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/v1/student")
+@RequestMapping(path = "api/v1/students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -26,17 +26,17 @@ public class StudentController {
     public Student getStudentByID(@PathVariable("studentID") Long studentID){return studentService.getStudentByID(studentID);}
 
 
-    @PostMapping
+    @PostMapping("/newStudent")
     public void storeNewStudent(@RequestBody Student student){
         studentService.storeNewStudent(student);
     }
 
-    @DeleteMapping(path = "{studentID}")
+    @DeleteMapping(path = "/deleteStudent/{studentID}")
     public void destroyStory(@PathVariable("studentID") Long studentID){
         studentService.destroyStudent(studentID);
     }
 
-    @PutMapping(path = "{studentID}")
+    @PutMapping(path = "/updateStudent/{studentID}")
     public void updateStudent(@PathVariable("studentID") Long studentID,
                               @RequestParam(required = false) String name,
                               @RequestParam(required = false) String email){
