@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST).hasAuthority(AppStudentRole.Representative.name())
                 .antMatchers(HttpMethod.DELETE).hasAuthority(AppStudentRole.Representative.name())
                 .antMatchers(HttpMethod.PUT).hasAuthority(AppStudentRole.Representative.name())
-                .anyRequest().authenticated().and().formLogin();
+                .anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/students",true);
     }
 
     @Override

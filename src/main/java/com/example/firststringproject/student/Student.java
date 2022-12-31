@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -163,6 +165,13 @@ public class Student implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appStudentRole.name());
         return Collections.singletonList(authority);
+    }
+
+    public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
+        Set<SimpleGrantedAuthority> permissions=appStudentRole.getPermissions().stream()
+                .map(appStudentPermissions -> new SimpleGrantedAuthority(appStudentPermissions.getPermission()))
+                .collect(Collectors.toSet());
+        return permissions;
     }
 
 }
