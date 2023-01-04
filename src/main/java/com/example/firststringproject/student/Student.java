@@ -119,13 +119,8 @@ public class Student implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -166,7 +161,6 @@ public class Student implements UserDetails {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appStudentRole.name());
         return Collections.singletonList(authority);
     }
-
     public Set<SimpleGrantedAuthority> getGrantedAuthorities(){
         Set<SimpleGrantedAuthority> permissions=appStudentRole.getPermissions().stream()
                 .map(appStudentPermissions -> new SimpleGrantedAuthority(appStudentPermissions.getPermission()))

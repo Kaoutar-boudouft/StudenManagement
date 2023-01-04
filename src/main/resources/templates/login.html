@@ -27,14 +27,16 @@
     <form class="form-signin" method="post" action="/login">
         <h2 class="form-signin-heading text-white">New Login Form</h2>
         <p>
-            <label for="username" class="sr-only">Username</label>
+            <label for="username" class="sr-only">Email</label>
             <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
         </p>
         <p>
             <label for="password" class="sr-only">Password</label>
             <input type="password" id="password" name="password" class="form-control" placeholder="Password" required="">
+        </p> <p>
+        <h6 class="text-white">Remember Me ?</h6><span>
+            <input type="checkbox" id="remember-me" name="remember-me" class="form-control"></span>
         </p>
-        <input name="_csrf" type="hidden" value="d4017e72-fdfa-4ea7-98db-d405e45bab01">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
 </div>
